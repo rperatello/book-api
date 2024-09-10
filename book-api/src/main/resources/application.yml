@@ -2,10 +2,11 @@ spring:
   application:
     name: book-api
   datasource:
-    url: jdbc:h2:mem:book_db;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:book_db;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;
     driverClassName: org.h2.Driver
     username: sa
-    password:        
+    password:  
+    connectionProperties: useUnicode=true;characterEncoding=UTF-8      
   h2:
     console:
       enabled: true
@@ -13,5 +14,5 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: none    
-    show-sql: false
+      ddl-auto: update    
+    show-sql: true
