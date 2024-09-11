@@ -1,9 +1,0 @@
-1725937499985	Delete element
-1725937504174	Delete element
-1725937526757	Rename type 'BookApiApplication'
-1725937528396	Rename type 'BookApiApplicationTests'
-1725937543908	Rename resource 'application.properties'
-1725950507322	Rename field 'peopleReted'
-1725950530564	Rename method 'setPeopleReted'
-1725950568070	Rename method 'setUrl'
-1725950635565	Rename method 'setBookUrl'
