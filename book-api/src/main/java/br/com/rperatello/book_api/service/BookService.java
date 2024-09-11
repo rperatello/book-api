@@ -23,6 +23,9 @@ import org.springframework.stereotype.Service;
 import com.opencsv.CSVReader;
 
 import br.com.rperatello.book_api.controller.BookController;
+import br.com.rperatello.book_api.data.vo.v1.BookResponseVO;
+import br.com.rperatello.book_api.exception.ResourceNotFoundException;
+import br.com.rperatello.book_api.mapper.Mapper;
 import br.com.rperatello.book_api.model.Book;
 import br.com.rperatello.book_api.model.interfaces.IBookService;
 import br.com.rperatello.book_api.repository.IBookRepository;
@@ -37,7 +40,7 @@ public class BookService implements IBookService {
     private IBookRepository bookRepository;
 	
 	@Autowired
-	PagedResourcesAssembler<Book> assembler;
+	PagedResourcesAssembler<BookResponseVO> assembler;
 
     @Transactional
 	@Override
@@ -97,19 +100,45 @@ public class BookService implements IBookService {
 		
 	}
     
-	public PagedModel<EntityModel<Book>> findAll(Pageable pageable){
+	public PagedModel<EntityModel<BookResponseVO>> findAll(Pageable pageable){
 
 		logger.info("Finding all books!");
 
 		var booksPage = bookRepository.findAll(pageable);
+		
+		var booksVO = booksPage.map(b -> Mapper.parseObject(b, BookResponseVO.class));
+		booksVO.map(p -> addBookHateoasLinks(p));
 
 		Link findAllLink = linkTo(
 		          methodOn(BookController.class)
-		          	.findAll(pageable.getPageNumber(),
-	                         pageable.getPageSize(),
-	                         "asc")).withSelfRel();
+		          	.findAll(
+		          			pageable.getPageNumber(),
+	                        pageable.getPageSize(),
+	                        "asc"
+                    )).withSelfRel();
 		
-		return assembler.toModel(booksPage, findAllLink);
+		return assembler.toModel(booksVO, findAllLink);
+	}
+	
+	@Override
+	public BookResponseVO findById(Long id) {
+		logger.info(String.format("Find book with ID %s ...", id));
+		var agency = bookRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+		var vo = Mapper.parseObject(agency, BookResponseVO.class);
+		return addBookHateoasLinks(vo);
+	}
+	
+	
+	public BookResponseVO addBookHateoasLinks( BookResponseVO vo) {
+		try {
+			if (vo == null) throw new ResourceNotFoundException("Book data is required");
+			return vo.add(linkTo(methodOn(BookController.class).findById(vo.getKey())).withSelfRel());
+		} 
+		catch (Exception e) {
+			logger.log(Level.SEVERE, String.format("addBookHateoasLinks - Error: %s ", e.getMessage()));
+			return vo;
+		}
 	}
 
 }

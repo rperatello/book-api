@@ -4,12 +4,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 
-import br.com.rperatello.book_api.model.Book;
+import br.com.rperatello.book_api.data.vo.v1.BookResponseVO;
 
 public interface IBookService {
 	
 	void uploadBooksByCSV(String filePath); 
 	
-	PagedModel<EntityModel<Book>> findAll(Pageable pageable);
+	PagedModel<EntityModel<BookResponseVO>> findAll(Pageable pageable);
+	
+	BookResponseVO findById(Long id);
 
 }
