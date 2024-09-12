@@ -36,7 +36,7 @@ public class Book implements Serializable {
 	@Column(name = "type", nullable = true)
 	private String type;
 	
-	@Column(name = "currency", nullable = true)
+	@Column(name = "currency", nullable = true, length = 10)
 	private String currency;
 	
 	@Column(name = "price", nullable = true)
