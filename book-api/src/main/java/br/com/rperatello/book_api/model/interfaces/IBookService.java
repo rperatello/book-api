@@ -1,5 +1,7 @@
 package br.com.rperatello.book_api.model.interfaces;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -17,5 +19,7 @@ public interface IBookService {
 	PagedModel<EntityModel<BookResponseVO>> findByGenre(Pageable pageable, String genre);
 	
 	PagedModel<EntityModel<BookResponseVO>> findByAuthor(Pageable pageable, String author);
+	
+	List<BookResponseVO> findLastViewedRecords(String lastViewed);
 
 }

@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,10 +200,35 @@ public class BookService implements IBookService {
 
 	}
 	
+	public List<BookResponseVO> findLastViewedRecords(String lastViewed){		
+
+		logger.info(String.format("Finding last viewed records - ID´s: %s ...", lastViewed));
+		
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		if (!StringUtils.isBlank(lastViewed) && lastViewed.matches("^[0-9|]+$"))
+			ids = Arrays.stream(lastViewed.split("\\|"))
+					.map(String::trim)
+	                .filter(s -> !s.isEmpty())
+	                .map(Integer::parseInt)
+	                .collect(Collectors.toList());			
+		
+		List<BookResponseVO> books = new ArrayList<BookResponseVO>();
+		
+		if (!ids.isEmpty()) 
+			books = Mapper.parseListObjects(bookRepository.findLastViewedRecords(ids), BookResponseVO.class);
+		
+		books.stream()
+			.forEach(p -> addBookHateoasLinks(p));	
+		
+		return books;
+
+	}
+	
 	public BookResponseVO addBookHateoasLinks( BookResponseVO objSaved) {
 		try {
 			if (objSaved == null) throw new ResourceNotFoundException("Book data is required");
-			return objSaved.add(linkTo(methodOn(BookController.class).findById(objSaved.getKey())).withSelfRel());
+			return objSaved.add(linkTo(methodOn(BookController.class).findById(objSaved.getKey(), null, null)).withSelfRel());
 		} 
 		catch (Exception e) {
 			logger.log(Level.SEVERE, String.format("addBookHateoasLinks - Error: %s ", e.getMessage()));
