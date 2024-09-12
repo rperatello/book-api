@@ -24,18 +24,43 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.rperatello.book_api.data.vo.v1.BookResponseVO;
 import br.com.rperatello.book_api.model.interfaces.IBookService;
 import br.com.rperatello.book_api.util.MediaType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@Tag(name = "Books", description = "Endpoints for books information")
 public class BookController {
 	
 	@Autowired
 	private IBookService bookService;
 	
 	@GetMapping(produces = { MediaType.APPLICATION_JSON })	
+	@Operation(
+		summary = "Finds all books", description = "Finds all books in database",
+		tags = {"Books"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200",
+				content = {
+					@Content(
+						mediaType = "application/json",
+						schema = @Schema(implementation = PagedModel.class)
+					)
+			}),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+		}
+	)	
 	public ResponseEntity<PagedModel<EntityModel<BookResponseVO>>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "size", defaultValue = "12") Integer size,
@@ -48,10 +73,28 @@ public class BookController {
 		
 	}
 	
+	
 	@GetMapping(
-			value = "/{id}",
+			value = "/{id}",					
 			produces = { MediaType.APPLICATION_JSON }
-	)	
+	)
+	@Operation(
+		summary = "Finds book by ID", description = "Finds a books in database by ID",
+		tags = {"Books"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200",
+				content = {
+					@Content(
+						mediaType = "application/json",
+						schema = @Schema(implementation = BookResponseVO.class)
+					)
+			}),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+		}
+	)
 	public ResponseEntity<BookResponseVO> findById(
 				@PathVariable(value = "id") Long id,
 				HttpServletRequest request,
@@ -95,7 +138,24 @@ public class BookController {
 	@GetMapping(
 			value = "/genre/{genre}",
 			produces = { MediaType.APPLICATION_JSON }
-	)	
+	)
+	@Operation(
+		summary = "Finds book by genre", description = "Finds a books in database by genre",
+		tags = {"Books"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200",
+				content = {
+					@Content(
+						mediaType = "application/json",
+						schema = @Schema(implementation = PagedModel.class)
+					)
+			}),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+		}
+	)
 	public ResponseEntity<PagedModel<EntityModel<BookResponseVO>>> findByGenre(
 			@PathVariable(value = "genre") String genre,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -113,7 +173,24 @@ public class BookController {
 	@GetMapping(
 			value = "/author/{author}",
 			produces = { MediaType.APPLICATION_JSON }
-	)	
+	)
+	@Operation(
+		summary = "Finds book by author", description = "Finds a books in database by author",
+		tags = {"Books"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200",
+				content = {
+					@Content(
+						mediaType = "application/json",
+						schema = @Schema(implementation = PagedModel.class)
+					)
+			}),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+		}
+	)
 	public ResponseEntity<PagedModel<EntityModel<BookResponseVO>>> findByAuthor(
 			@PathVariable(value = "author") String author,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -129,9 +206,26 @@ public class BookController {
 	}	
 	
 	@GetMapping(
-			value = "/findLastViewedRecords",
-			produces = { MediaType.APPLICATION_JSON }
-			)	
+		value = "/findLastViewedRecords",
+		produces = { MediaType.APPLICATION_JSON }
+	)
+	@Operation(
+		summary = "Finds last book viewed", description = "Finds last book viewed in database",
+		tags = {"Books"},
+		responses = {
+			@ApiResponse(description = "Success", responseCode = "200",
+				content = {
+					@Content(
+						mediaType = "application/json",
+						array = @ArraySchema(schema = @Schema(implementation = BookResponseVO.class))
+					)
+			}),
+			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+			@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+		}
+	)
 	public ResponseEntity<List<BookResponseVO>> findLastViewedRecords(
 			@CookieValue(value = "lastViewed", defaultValue = "") String lastViewed
 			){

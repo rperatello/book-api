@@ -20,3 +20,9 @@ spring:
     hibernate:
       ddl-auto: none    
     show-sql: false
+springdoc:
+  pathsToMatch: 
+  - /auth/**
+  - /api/v1/**
+  swagger-ui:
+    use-root-path: true
