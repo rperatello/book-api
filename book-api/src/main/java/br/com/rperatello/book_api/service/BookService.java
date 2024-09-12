@@ -31,7 +31,9 @@ import br.com.rperatello.book_api.mapper.Mapper;
 import br.com.rperatello.book_api.model.Book;
 import br.com.rperatello.book_api.model.interfaces.IBookService;
 import br.com.rperatello.book_api.repository.IBookRepository;
+import br.com.rperatello.book_api.util.serialization.converter.GsonUtil;
 import jakarta.transaction.Transactional;
+import net.spy.memcached.MemcachedClient;
 
 @Service
 public class BookService implements IBookService {
@@ -40,6 +42,9 @@ public class BookService implements IBookService {
 	
 	@Autowired
     private IBookRepository bookRepository;
+	
+	@Autowired
+	private MemcachedClient memcachedClient;;
 	
 	@Autowired
 	PagedResourcesAssembler<BookResponseVO> assembler;
@@ -124,10 +129,26 @@ public class BookService implements IBookService {
 	
 	@Override
 	public BookResponseVO findById(Long id) {
+		
 		logger.info(String.format("Find book with ID %s ...", id));
+		
+		var lastId = memcachedClient.get("lastId");
+		if (lastId != null && lastId.equals(id.toString())) {
+			var lastObjSaved = memcachedClient.get("lastObj");
+			if (lastObjSaved != null) {	
+				logger.info("Returned response by cache ...");
+				BookResponseVO parsedObj = (BookResponseVO)GsonUtil.Desserialize(lastObjSaved.toString(), BookResponseVO.class );
+				return addBookHateoasLinks(parsedObj);	
+			}			
+		}		
 		var book = bookRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 		var vo = Mapper.parseObject(book, BookResponseVO.class);
+		
+		logger.info("Saving response in cache ...");
+		memcachedClient.set("lastId", 60, id.toString());
+		memcachedClient.set("lastObj", 60, GsonUtil.Serialize(vo));
+		
 		return addBookHateoasLinks(vo);
 	}
 	
@@ -177,14 +198,14 @@ public class BookService implements IBookService {
 
 	}
 	
-	public BookResponseVO addBookHateoasLinks( BookResponseVO vo) {
+	public BookResponseVO addBookHateoasLinks( BookResponseVO objSaved) {
 		try {
-			if (vo == null) throw new ResourceNotFoundException("Book data is required");
-			return vo.add(linkTo(methodOn(BookController.class).findById(vo.getKey())).withSelfRel());
+			if (objSaved == null) throw new ResourceNotFoundException("Book data is required");
+			return objSaved.add(linkTo(methodOn(BookController.class).findById(objSaved.getKey())).withSelfRel());
 		} 
 		catch (Exception e) {
 			logger.log(Level.SEVERE, String.format("addBookHateoasLinks - Error: %s ", e.getMessage()));
-			return vo;
+			return objSaved;
 		}
 	}	
 
