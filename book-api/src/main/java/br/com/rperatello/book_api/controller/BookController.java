@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/book/v1")
+@RequestMapping("/api/v1/books")
 public class BookController {
 	
 	@Autowired
