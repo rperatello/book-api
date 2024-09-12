@@ -13,5 +13,9 @@ public interface IBookService {
 	PagedModel<EntityModel<BookResponseVO>> findAll(Pageable pageable);
 	
 	BookResponseVO findById(Long id);
+	
+	PagedModel<EntityModel<BookResponseVO>> findByGenre(Pageable pageable, String genre);
+	
+	PagedModel<EntityModel<BookResponseVO>> findByAuthor(Pageable pageable, String author);
 
 }

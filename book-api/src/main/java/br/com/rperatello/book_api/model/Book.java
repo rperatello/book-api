@@ -127,7 +127,7 @@ public class Book implements Serializable {
 		this.rating = rating;
 	}
 
-	public int getPeopleReted() {
+	public int getPeopleRated() {
 		return peopleRated;
 	}
 

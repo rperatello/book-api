@@ -1,5 +1,8 @@
 package br.com.rperatello.book_api.service;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,9 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -24,6 +25,7 @@ import com.opencsv.CSVReader;
 
 import br.com.rperatello.book_api.controller.BookController;
 import br.com.rperatello.book_api.data.vo.v1.BookResponseVO;
+import br.com.rperatello.book_api.exception.RequiredObjectIsNullException;
 import br.com.rperatello.book_api.exception.ResourceNotFoundException;
 import br.com.rperatello.book_api.mapper.Mapper;
 import br.com.rperatello.book_api.model.Book;
@@ -102,7 +104,7 @@ public class BookService implements IBookService {
     
 	public PagedModel<EntityModel<BookResponseVO>> findAll(Pageable pageable){
 
-		logger.info("Finding all books!");
+		logger.info("Finding all books ...");
 
 		var booksPage = bookRepository.findAll(pageable);
 		
@@ -123,12 +125,57 @@ public class BookService implements IBookService {
 	@Override
 	public BookResponseVO findById(Long id) {
 		logger.info(String.format("Find book with ID %s ...", id));
-		var agency = bookRepository.findById(id)
+		var book = bookRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
-		var vo = Mapper.parseObject(agency, BookResponseVO.class);
+		var vo = Mapper.parseObject(book, BookResponseVO.class);
 		return addBookHateoasLinks(vo);
 	}
 	
+	public PagedModel<EntityModel<BookResponseVO>> findByGenre(Pageable pageable, String genre){
+	
+		logger.info(String.format("Finding by genre %s ...", genre));
+		
+		if (StringUtils.isBlank(genre)) throw new RequiredObjectIsNullException("Genre is null or empty");
+
+		var books = bookRepository.findByMainGenre(genre, pageable);
+		var booksVO = books.map(b -> Mapper.parseObject(b, BookResponseVO.class));
+		booksVO.map(p -> addBookHateoasLinks(p));		
+
+		Link findAllLink = linkTo(
+		          methodOn(BookController.class)
+		          	.findByGenre(
+		          			genre,
+		          			pageable.getPageNumber(),
+	                        pageable.getPageSize(),
+	                        "asc"
+                    )).withSelfRel();
+		
+		return assembler.toModel(booksVO, findAllLink);
+
+	}
+	
+	public PagedModel<EntityModel<BookResponseVO>> findByAuthor(Pageable pageable, String author){		
+
+		logger.info(String.format("Finding by author %s ...", author));
+		
+		if (StringUtils.isBlank(author)) throw new RequiredObjectIsNullException("Author is null or empty");
+
+		var books = bookRepository.findByAuthor(author, pageable);
+		var booksVO = books.map(b -> Mapper.parseObject(b, BookResponseVO.class));
+		booksVO.map(p -> addBookHateoasLinks(p));		
+
+		Link findAllLink = linkTo(
+		          methodOn(BookController.class)
+		          	.findByAuthor(
+		          			author,
+		          			pageable.getPageNumber(),
+	                        pageable.getPageSize(),
+	                        "asc"
+                    )).withSelfRel();
+		
+		return assembler.toModel(booksVO, findAllLink);
+
+	}
 	
 	public BookResponseVO addBookHateoasLinks( BookResponseVO vo) {
 		try {
@@ -139,6 +186,6 @@ public class BookService implements IBookService {
 			logger.log(Level.SEVERE, String.format("addBookHateoasLinks - Error: %s ", e.getMessage()));
 			return vo;
 		}
-	}
+	}	
 
 }

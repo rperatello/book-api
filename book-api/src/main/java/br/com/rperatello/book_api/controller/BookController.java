@@ -25,27 +25,64 @@ public class BookController {
 	@Autowired
 	private IBookService bookService;
 	
-	@GetMapping(produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })	
+	@GetMapping(produces = { MediaType.APPLICATION_JSON })	
 	public ResponseEntity<PagedModel<EntityModel<BookResponseVO>>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "size", defaultValue = "12") Integer size,
 			@RequestParam(value = "sort", defaultValue = "asc") String sort
-			) {
+	){
 		
-		var sortDirection = "desc".equalsIgnoreCase(sort)
-				? Direction.DESC : Direction.ASC;
-			
+		var sortDirection = "desc".equalsIgnoreCase(sort)? Direction.DESC : Direction.ASC;			
 		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "title"));
 		return ResponseEntity.ok(bookService.findAll(pageable));
+		
 	}
 	
 	@GetMapping(
 			value = "/{id}",
-			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }
+			produces = { MediaType.APPLICATION_JSON }
 	)	
 	public BookResponseVO findById(@PathVariable(value = "id") Long id) {
+		
 		var res = bookService.findById(id);
 		return res;
+		
+	}
+	
+	@GetMapping(
+			value = "/genre/{genre}",
+			produces = { MediaType.APPLICATION_JSON }
+	)	
+	public ResponseEntity<PagedModel<EntityModel<BookResponseVO>>> findByGenre(
+			@PathVariable(value = "genre") String genre,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "size", defaultValue = "12") Integer size,
+			@RequestParam(value = "sort", defaultValue = "asc") String sort
+	){
+		
+		var sortDirection = "desc".equalsIgnoreCase(sort)? Direction.DESC : Direction.ASC;			
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "title"));
+		var res = bookService.findByGenre(pageable, genre);
+		return ResponseEntity.ok(res);
+		
+	}
+	
+	@GetMapping(
+			value = "/author/{author}",
+			produces = { MediaType.APPLICATION_JSON }
+	)	
+	public ResponseEntity<PagedModel<EntityModel<BookResponseVO>>> findByAuthor(
+			@PathVariable(value = "author") String author,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "size", defaultValue = "12") Integer size,
+			@RequestParam(value = "sort", defaultValue = "asc") String sort
+	){
+		
+		var sortDirection = "desc".equalsIgnoreCase(sort)? Direction.DESC : Direction.ASC;			
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "title"));
+		var res = bookService.findByAuthor(pageable, author);
+		return ResponseEntity.ok(res);
+		
 	}
 
 }
