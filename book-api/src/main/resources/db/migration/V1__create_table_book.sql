@@ -1,16 +1,19 @@
-create table if not exists tb_book (
-	id bigint not null AUTO_INCREMENT, 
-	title varchar(500) not null, 
-	author varchar(500), 
-	main_genre varchar(255), 
-	sub_genre varchar(255), 
-	type varchar(255), 
-	currency varchar(10), 
-	price float(53), 
-	rating float(53),
-	people_rated integer, 
-	url varchar(500), 
-	primary key (id)
+
+CREATE TABLE tb_book (
+    id BIGINT NOT NULL AUTO_INCREMENT, 
+    title VARCHAR(500) NOT NULL, 
+    author VARCHAR(500), 
+    main_genre VARCHAR(255), 
+    sub_genre VARCHAR(255), 
+    type VARCHAR(255), 
+    currency VARCHAR(10), 
+    price DECIMAL(10, 2),
+    rating DECIMAL(3, 2), 
+    people_rated INT, 
+    url VARCHAR(500), 
+    PRIMARY KEY (id)
 );
-create index if not exists IDX_book_author on tb_book (author);
-create index if not exists IDX_book_main_genre on tb_book (main_genre);
+
+CREATE INDEX IDX_book_author ON tb_book (author);
+CREATE INDEX IDX_book_main_genre ON tb_book (main_genre);
+

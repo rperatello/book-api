@@ -33,6 +33,8 @@
 		<opencsv.version>5.5.2</opencsv.version>
 		<modelmapper.version>3.2.0</modelmapper.version>
 		<springdoc.version>2.3.0</springdoc.version>
+		<rest-assured.version>4.5.0</rest-assured.version>
+		<testcontainers.version>1.16.3</testcontainers.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -47,7 +49,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>8.0.33</version> <!-- Substitua pela versão desejada -->
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -78,14 +85,12 @@
 		    <version>2.8.4</version>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
-			<scope>runtime</scope>
+			<groupId>org.flywaydb</groupId>
+	        <artifactId>flyway-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
+			<artifactId>flyway-mysql</artifactId>
 		</dependency>
 		<dependency>		
 	    	<groupId>com.google.code.gson</groupId>
@@ -98,6 +103,23 @@
 	        <artifactId>opencsv</artifactId>
 	        <version>${opencsv.version}</version>
 	    </dependency>
+	    <dependency>
+	        <groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+	    </dependency>	    
+	    <dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${rest-assured.version}</version>
+			<scope>test</scope>
+		</dependency>	    
 	</dependencies>
 
 	<build>
@@ -106,6 +128,28 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+			   <groupId>org.flywaydb</groupId>
+			   <artifactId>flyway-maven-plugin</artifactId>
+			   <configuration>
+			      <url>jdbc:mysql://127.0.0.1:3306/book_db?useTimezone=true&amp;serverTimezone=UTC&amp;useSSL=false</url>
+			      <user>root</user>
+			      <password>admm</password>
+			   </configuration>
+			   <dependencies>
+			      <dependency>
+			         <groupId>mysql</groupId>
+			         <artifactId>mysql-connector-java</artifactId>
+			         <version>${mysql.version}</version>
+			         <exclusions>
+			            <exclusion>
+			               <artifactId>slf4j-api</artifactId>
+			               <groupId>org.slf4j</groupId>
+			            </exclusion>
+			         </exclusions>
+			      </dependency>
+			   </dependencies>
+			</plugin>			
 		</plugins>
 	</build>
 

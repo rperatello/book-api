@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8888
 cors:
   originPatterns: http://localhost:8080,http://localhost:8081
 spring:
@@ -7,16 +7,20 @@ spring:
     name: book-api
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/book_db?useTimezone=true&serverTimezone=UTC
-    username: root
-    password: adm
+    user: root
+    passwaord: adm
+#    connectionProperties: useUnicode=true;characterEncoding=UTF-8   
   jpa:
+    open-in-view: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none    
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-    show-sql: false
+        jdbc:
+          lob:
+            non-contextual-creation: true
 springdoc:
   pathsToMatch: 
   - /auth/**
