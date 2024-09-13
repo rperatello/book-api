@@ -16,7 +16,7 @@ public class MemcachedConfig {
         String memcachedHost = System.getenv("MEMCACHED_HOST");
         
         if (memcachedHost == null || memcachedHost.isEmpty())
-            memcachedHost = "localhost";
+            memcachedHost = "127.0.0.1";
         
         String serverWithPort = String.format("%s:11211", memcachedHost);        
         MemcachedClientFactoryBean factoryBean = new MemcachedClientFactoryBean();

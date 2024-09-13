@@ -25,7 +25,6 @@ import br.com.rperatello.book_api.data.vo.v1.BookResponseVO;
 import br.com.rperatello.book_api.model.interfaces.IBookService;
 import br.com.rperatello.book_api.util.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

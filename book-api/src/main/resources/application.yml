@@ -1,22 +1,23 @@
 server:
-  port: 8081
+  port: 80
 cors:
-  originPatterns: http://localhost:8080,http://localhost:8081
+  originPatterns: http://127.0.0.1:8080,http://127.0.0.1:8081
 spring:
   application:
     name: book-api
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/book_db?useTimezone=true&serverTimezone=UTC
-    username: root
-    password: adm
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/book_db?useTimezone=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:adm}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-    show-sql: false
+        dialect: ${SPRING_JPA_HIBERNATE_DIALECT:org.hibernate.dialect.MySQL8Dialect}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    open-in-view: ${SPRING_JPA_OPEN_IN_VIEW:true}
 springdoc:
   pathsToMatch: 
   - /auth/**
