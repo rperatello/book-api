@@ -2,7 +2,6 @@ package br.com.rperatello.book_api.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.modelmapper.ModelMapper;
 
@@ -11,15 +10,17 @@ import br.com.rperatello.book_api.model.Book;
 
 public class Mapper {
 	
-	private static Logger logger = Logger.getLogger(Mapper.class.getName());
-
 	private static ModelMapper mapper = new ModelMapper();
 	
 	static {
+		
 		mapper.getConfiguration().setAmbiguityIgnored(true);
 		
 		mapper.createTypeMap(Book.class, BookResponseVO.class)
-		.addMapping(Book::getId, BookResponseVO::setKey);
+		.addMapping(Book::getId, BookResponseVO::setKey);	
+		
+		mapper.createTypeMap(BookResponseVO.class, Book.class)
+        .addMapping(BookResponseVO::getKey, Book::setId);
 		
 	}
 	
