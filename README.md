@@ -1,6 +1,6 @@
 # book-api
 
- Book-API é uma api que disponibiliza informações sobre livros, cujas informações foram obtidas por meio de dados publicos disponibilizados no [Kaggle]((https://www.kaggle.com/datasets/chhavidhankhar11/amazon-books-dataset/).
+ Book-API é uma api que disponibiliza informações sobre livros, cujas informações foram obtidas por meio de dados publicos disponibilizados no [Kaggle](https://www.kaggle.com/datasets/chhavidhankhar11/amazon-books-dataset/).
 
 
 ## I. Arquitetura de Solução e Arquitetura Técnica: 
