@@ -24,7 +24,7 @@
 - [] Infrastructure: Contém as classes que auxiliam na configuração da aplicação.
  Atualmente, as informações disponibilizadas são inseridas automaticamente na aplicação através de um DataLoader que faz a leitura de um arquivo CSV com os dados.
 
-## III. Melhorias e Considerações Finais: Discussão sobre possíveis 
+## III. Melhorias e Considerações Finais: Discussão sobre possíveis melhorias
 
   Em termos de melhoria para a aplicação, as próximas etapas são:
 - [] Criar os endpoints para a completa gestão da informações para cada registros no banco de dados (Create, Update e Delete).
