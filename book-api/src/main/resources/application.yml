@@ -1,7 +1,7 @@
 server:
-  port: 80
+  port: ${SERVER_PORT:80}
 cors:
-  originPatterns: http://127.0.0.1:8080,http://127.0.0.1:8081
+  originPatterns: ${CORS_ORIGIN_PATTERNS:http://127.0.0.1:8080,http://127.0.0.1:8081}
 spring:
   application:
     name: book-api
@@ -10,9 +10,8 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/book_db?useTimezone=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:adm}
-  jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
     properties:
       hibernate:
         dialect: ${SPRING_JPA_HIBERNATE_DIALECT:org.hibernate.dialect.MySQL8Dialect}

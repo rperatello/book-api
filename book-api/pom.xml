@@ -53,7 +53,7 @@
 		<dependency>
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
-		    <version>8.0.33</version> <!-- Substitua pela versão desejada -->
+		    <version>8.0.33</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -97,7 +97,6 @@
 		    <artifactId>gson</artifactId>		    
 		    <version>${gson.version}</version>
 		</dependency>
-		<!-- OpenCSV para ler CSV -->
 	    <dependency>
 	        <groupId>com.opencsv</groupId>
 	        <artifactId>opencsv</artifactId>

@@ -1,7 +1,7 @@
 server:
-  port: 80
+  port: ${SERVER_PORT:80}
 cors:
-  originPatterns: http://127.0.0.1:8080,http://127.0.0.1:8081
+  originPatterns: ${CORS_ORIGIN_PATTERNS:http://127.0.0.1:8080,http://127.0.0.1:8081}
 spring:
   application:
     name: book-api

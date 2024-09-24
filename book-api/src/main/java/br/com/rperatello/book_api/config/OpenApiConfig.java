@@ -9,20 +9,19 @@ import io.swagger.v3.oas.models.info.License;
 
 @Configuration
 public class OpenApiConfig {
-		
-		@Bean
-		public OpenAPI customOpenAPI() {
-			return new OpenAPI()
-				.info(new Info()
+
+	@Bean
+	public OpenAPI customOpenAPI() {
+		return new OpenAPI().info(
+				new Info()
 					.title("Book-API")
 					.description("Book-Api is an API that provides information about books")
 					.termsOfService("https://www.rperatello.com.br")
 					.license(
 						new License()
-							.name("Apache 2.0")
-							.url("https://www.rperatello.com.br")
-						)
-					);
-		}
+						.name("Apache 2.0")
+						.url("https://www.rperatello.com.br")
+					));
+	}
 
 }
